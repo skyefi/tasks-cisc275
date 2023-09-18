@@ -148,7 +148,9 @@ export function duplicateQuestion(id: number, oldQuestion: Question): Question {
  * Check out the subsection about "Nested Fields" for more information.
  */
 export function addOption(question: Question, newOption: string): Question {
-    return question;
+    //To copy and append the original "options", use the spread operator to create
+    //a new array, and add newOption to the end!
+    return { ...question, options: [...question.options, newOption] };
 }
 
 /**
@@ -165,5 +167,12 @@ export function mergeQuestion(
     contentQuestion: Question,
     { points }: { points: number }
 ): Question {
-    return contentQuestion;
+    //Copy/spread the content question, modifying id, name, published, and points as needed
+    return {
+        ...contentQuestion,
+        id: id,
+        name: name,
+        published: false,
+        points: points
+    };
 }
