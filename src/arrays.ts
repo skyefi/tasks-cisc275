@@ -5,16 +5,14 @@
  * the number twice.
  */
 export function bookEndList(numbers: number[]): number[] {
-    //If length is 2 or longer, return an array of the first and last elements
     if (numbers.length > 1) {
+        //If length is 2 or longer, return an array of the first and last elements
         return [numbers[0], numbers[numbers.length - 1]];
-    }
-    //If length is 1, return an array of the first/only element twice
-    else if (numbers.length === 1) {
+    } else if (numbers.length === 1) {
+        //If length is 1, return an array of the first/only element twice
         return [numbers[0], numbers[0]];
-    }
-    //If array is empty, return another empty array
-    else {
+    } else {
+        //If array is empty, return another empty array
         return [];
     }
 }
