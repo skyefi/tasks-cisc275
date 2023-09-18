@@ -124,24 +124,22 @@ export function makeMath(addends: number[]): string {
  * And the array [1, 9, 7] would become [1, 9, 7, 17]
  */
 export function injectPositive(values: number[]): number[] {
+    //Check for empty string
     if (values.length < 1) return [0];
-    let firstNegIdx: number = values.findIndex(
-        (num: number): boolean => num < 0
-    );
 
-    const valuesBeforeNeg: number[] = [...values];
-    if (firstNegIdx >= 0) {
-        valuesBeforeNeg.splice(firstNegIdx, values.length - firstNegIdx, 0);
-    } else {
-        firstNegIdx = values.length;
-    }
+    //Calculate sum before negative number, and find negative number index
+    let sum = 0;
+    let firstNegIdx: number = values.findIndex((num: number): boolean => {
+        if (num >= 0) sum += num;
+        return num < 0;
+    });
 
-    const sum = valuesBeforeNeg.reduce(
-        (total: number, num: number): number => total + num
-    );
+    //If there are no negative numbers, treat the last number as the negative number
+    //(for splicing location)
+    if (firstNegIdx === -1) firstNegIdx = values.length - 1;
 
+    //Create a copy of the values array, and splice in the sum
     const valuesWithSum = [...values];
-
     valuesWithSum.splice(firstNegIdx + 1, 0, sum);
 
     return valuesWithSum;
