@@ -124,35 +124,25 @@ export function makeMath(addends: number[]): string {
  * And the array [1, 9, 7] would become [1, 9, 7, 17]
  */
 export function injectPositive(values: number[]): number[] {
-    console.log([] + "," + values.length);
+    if (values.length < 1) return [0];
     let firstNegIdx: number = values.findIndex(
         (num: number): boolean => num < 0
     );
-    console.log(firstNegIdx);
 
     const valuesBeforeNeg: number[] = [...values];
     if (firstNegIdx >= 0) {
-        valuesBeforeNeg.splice(
-            firstNegIdx,
-            values.length - (firstNegIdx + 1),
-            0
-        );
+        valuesBeforeNeg.splice(firstNegIdx, values.length - firstNegIdx, 0);
     } else {
-        firstNegIdx = values.length - 1;
+        firstNegIdx = values.length;
     }
-    console.log(valuesBeforeNeg);
-    console.log(firstNegIdx);
 
     const sum = valuesBeforeNeg.reduce(
         (total: number, num: number): number => total + num
     );
-    console.log(sum);
 
     const valuesWithSum = [...values];
-    console.log(valuesWithSum);
 
     valuesWithSum.splice(firstNegIdx + 1, 0, sum);
-    console.log(valuesWithSum);
 
     return valuesWithSum;
 }
