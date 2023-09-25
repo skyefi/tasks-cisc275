@@ -132,6 +132,7 @@ export function publishQuestion(question: Question): Question {
  */
 export function duplicateQuestion(id: number, oldQuestion: Question): Question {
     //Copy oldQuestion using spread operator, modifying fields necesary
+    //Also duplicates 'options' array for full deep copy
     return {
         ...oldQuestion,
         id: id,
