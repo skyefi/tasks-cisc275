@@ -2,14 +2,18 @@ import { Answer } from "./interfaces/answer";
 import { Question, QuestionType } from "./interfaces/question";
 import { makeBlankQuestion } from "./objects";
 
+export function deepCopyQuestion(question: Question): Question {
+    return { ...question, options: [...question.options] };
+}
+
 /**
  * Consumes an array of questions and returns a new array with only the questions
  * that are `published`.
  */
 export function getPublishedQuestions(questions: Question[]): Question[] {
-    return questions.filter(
-        (question: Question): boolean => question.published
-    );
+    return questions
+        .map(deepCopyQuestion)
+        .filter((question: Question): boolean => question.published);
 }
 
 /**
@@ -29,7 +33,7 @@ export function getNonEmptyQuestions(questions: Question[]): Question[] {
         return ans;
     };
 
-    return questions.filter(notEmptyQues);
+    return questions.map(deepCopyQuestion).filter(notEmptyQues);
 }
 
 /***
@@ -40,9 +44,9 @@ export function findQuestion(
     questions: Question[],
     id: number
 ): Question | null {
-    const filteredQuestions: Question[] = questions.filter(
-        (question: Question): boolean => question.id === id
-    );
+    const filteredQuestions: Question[] = questions
+        .map(deepCopyQuestion)
+        .filter((question: Question): boolean => question.id === id);
 
     if (filteredQuestions.length === 1) {
         return filteredQuestions[0];
@@ -55,9 +59,9 @@ export function findQuestion(
  * with the given `id`.
  */
 export function removeQuestion(questions: Question[], id: number): Question[] {
-    return questions.filter(
-        (question: Question): boolean => question.id !== id
-    );
+    return questions
+        .map(deepCopyQuestion)
+        .filter((question: Question): boolean => question.id !== id);
 }
 
 /***
@@ -147,7 +151,11 @@ export function makeAnswers(questions: Question[]): Answer[] {
  */
 export function publishAll(questions: Question[]): Question[] {
     return questions.map(
-        (question: Question): Question => ({ ...question, published: true })
+        (question: Question): Question => ({
+            ...question,
+            published: true,
+            options: [...question.options]
+        })
     );
 }
 
@@ -156,6 +164,8 @@ export function publishAll(questions: Question[]): Question[] {
  * are the same type. They can be any type, as long as they are all the SAME type.
  */
 export function sameType(questions: Question[]): boolean {
+    if (questions.length <= 1) return true;
+
     const firstType: QuestionType = questions[0].type;
     return questions.every(
         (question: Question): boolean => question.type === firstType
@@ -173,7 +183,10 @@ export function addNewQuestion(
     name: string,
     type: QuestionType
 ): Question[] {
-    return [...questions, makeBlankQuestion(id, name, type)];
+    return [
+        ...questions.map(deepCopyQuestion),
+        makeBlankQuestion(id, name, type)
+    ];
 }
 
 /***
@@ -188,7 +201,9 @@ export function renameQuestionById(
 ): Question[] {
     return questions.map(
         (question: Question): Question =>
-            question.id === targetId ? { ...question, name: newName } : question
+            question.id === targetId
+                ? { ...question, name: newName, options: [...question.options] }
+                : { ...question, options: [...question.options] }
     );
 }
 
@@ -204,7 +219,22 @@ export function changeQuestionTypeById(
     targetId: number,
     newQuestionType: QuestionType
 ): Question[] {
-    return [];
+    //This is running and passing fine, can't seem to get rid of lint complaining about
+    //indentation... it did this indentation automatically so, idk.
+    const questionsCopy = questions.map(deepCopyQuestion);
+    return questionsCopy.map(
+        (question: Question): Question =>
+            question.id === targetId
+                ? {
+                      ...question,
+                      type: newQuestionType,
+                      options:
+                          newQuestionType === "multiple_choice_question"
+                              ? [...question.options]
+                              : []
+                  }
+                : question
+    );
 }
 
 /**
@@ -223,7 +253,18 @@ export function editOption(
     targetOptionIndex: number,
     newOption: string
 ): Question[] {
-    return [];
+    const mappingHelper = (question: Question): Question => {
+        if (question.id !== targetId) return deepCopyQuestion(question);
+        else if (targetOptionIndex === -1)
+            return { ...question, options: [...question.options, newOption] };
+        else {
+            const copiedOptions: string[] = [...question.options];
+            copiedOptions.splice(targetOptionIndex, 1, newOption);
+            return { ...question, options: copiedOptions };
+        }
+    };
+
+    return questions.map(mappingHelper);
 }
 
 /***
