@@ -1,6 +1,6 @@
 import { Answer } from "./interfaces/answer";
 import { Question, QuestionType } from "./interfaces/question";
-import { makeBlankQuestion } from "./objects";
+import { duplicateQuestion, makeBlankQuestion } from "./objects";
 
 export function deepCopyQuestion(question: Question): Question {
     return { ...question, options: [...question.options] };
@@ -25,11 +25,8 @@ export function getNonEmptyQuestions(questions: Question[]): Question[] {
     const notEmptyQues = (question: Question): boolean => {
         let ans: boolean;
         ans = question.body !== "";
-        console.log("Body: ", ans);
         ans = ans || question.expected !== "";
-        console.log("Expected: ", ans);
         ans = ans || question.options.length !== 0;
-        console.log("Array length: ", question.options.length, ans);
         return ans;
     };
 
@@ -278,5 +275,15 @@ export function duplicateQuestionInArray(
     targetId: number,
     newId: number
 ): Question[] {
-    return [];
+    //Implementation assumes only 1 matching id === targetId
+    const idMatchIndex: number = questions.findIndex(
+        (question: Question): boolean => question.id === targetId
+    );
+    const copiedQuestions: Question[] = questions.map(deepCopyQuestion);
+    copiedQuestions.splice(
+        idMatchIndex + 1,
+        0,
+        duplicateQuestion(newId, questions[idMatchIndex])
+    );
+    return copiedQuestions;
 }
