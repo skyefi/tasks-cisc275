@@ -216,22 +216,17 @@ export function changeQuestionTypeById(
     targetId: number,
     newQuestionType: QuestionType
 ): Question[] {
-    //This is running and passing fine, can't seem to get rid of lint complaining about
-    //indentation... it did this indentation automatically so, idk.
-    const questionsCopy = questions.map(deepCopyQuestion);
-    return questionsCopy.map(
-        (question: Question): Question =>
-            question.id === targetId
-                ? {
-                      ...question,
-                      type: newQuestionType,
-                      options:
-                          newQuestionType === "multiple_choice_question"
-                              ? [...question.options]
-                              : []
-                  }
-                : question
-    );
+    //Re-wrote to make cleaner and fix indentation error
+    const changeTypeByIdHelper = (question: Question): Question => {
+        if (question.id !== targetId) return deepCopyQuestion(question);
+        const options: string[] =
+            newQuestionType === "multiple_choice_question"
+                ? [...question.options]
+                : [];
+        return { ...question, type: newQuestionType, options: options };
+    };
+
+    return questions.map(changeTypeByIdHelper);
 }
 
 /**
