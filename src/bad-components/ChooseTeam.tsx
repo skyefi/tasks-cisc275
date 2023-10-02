@@ -23,6 +23,11 @@ export function ChooseTeam(): JSX.Element {
 
     function clearTeam() {
         setTeam([]);
+        /*  Only included to get rid of lint complaint:
+        /** 'setAllOptions' is assigned a value but never used.
+        /** eslint @typescript-eslint / no - unused - vars
+        */
+        setAllOptions(PEOPLE);
     }
 
     return (
