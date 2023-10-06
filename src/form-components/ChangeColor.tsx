@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, FormCheck } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 const colors: string[] = [
     "red",
@@ -11,11 +11,6 @@ const colors: string[] = [
     "pink",
     "brown"
 ];
-
-interface makeColorButtonsProps {
-    activeColor: string;
-    setColor: (color: string) => void;
-}
 
 export function makeColorButtons(
     activeColor: string,
