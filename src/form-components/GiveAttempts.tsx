@@ -9,6 +9,7 @@ export function GiveAttempts(): JSX.Element {
         const requestInt: number = parseInt(requestedAttempts, 10);
         if (!isNaN(requestInt) && requestedAttempts !== "") {
             setAttempts(attempts + requestInt);
+            setRequestedAttempts("");
         }
     }
 
@@ -19,7 +20,7 @@ export function GiveAttempts(): JSX.Element {
                 <Form.Label>Request Addiional Attempts</Form.Label>
                 <Form.Control
                     type="number"
-                    value={0}
+                    value={requestedAttempts}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                         setRequestedAttempts(event.target.value)
                     }
