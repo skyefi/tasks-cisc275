@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Form } from "react-bootstrap";
 
 export function MultipleChoiceQuestion({
     options,
@@ -7,9 +8,25 @@ export function MultipleChoiceQuestion({
     options: string[];
     expectedAnswer: string;
 }): JSX.Element {
+    const [userAnswer, setUserAnswer] = useState<string>("");
+
+    function updateUserAnswer(event: React.ChangeEvent<HTMLSelectElement>) {
+        setUserAnswer(event.target.value);
+    }
+
     return (
         <div>
-            <h3>Multiple Choice Question</h3>
+            <Form.Group controlId="MultipleChoiceQuestion">
+                <Form.Label>Select an option</Form.Label>
+                <Form.Select value={userAnswer} onChange={updateUserAnswer}>
+                    {options.map((opt: string) => (
+                        <option key={opt} value={opt}>
+                            {opt}
+                        </option>
+                    ))}
+                </Form.Select>
+            </Form.Group>
+            {userAnswer === expectedAnswer ? "✔️" : "❌"}
         </div>
     );
 }
